@@ -29,10 +29,8 @@ module Paperclip
     # an interpolation pattern for Paperclip to use.
     def self.interpolate pattern, *args
       pattern = args.first.instance.send(pattern) if pattern.kind_of? Symbol
-      all.reverse.inject(pattern) do |result, tag|
-        result.gsub(/:#{tag}/) do |match|
-          send( tag, *args )
-        end
+      pattern.gsub(/(:(#{all.reverse.join("|")}))/) do |m|
+        send(m[1..-1], *args)
       end
     end
 
